@@ -53,7 +53,6 @@ public class TimeHandle {
 	    LocalDateTime.now();
 	    FileConfiguration data = FileHandler.data;
         String path = "players." + uuid.toString() + ".got-daily-time";
-        Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(uuid));
         long currentDate = System.currentTimeMillis();
         data.set(path, currentDate);
         FileHandler.saveData();
