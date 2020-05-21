@@ -1,5 +1,7 @@
 package com.moneybags.tempfly;
 
+import java.util.concurrent.ExecutionException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandExecutor;
@@ -23,10 +25,10 @@ import com.moneybags.tempfly.hook.WorldGuardAPI;
 import com.moneybags.tempfly.hook.askyblock.AskyblockHook;
 import com.moneybags.tempfly.tab.TabHandle;
 import com.moneybags.tempfly.util.AutoSave;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.ParticleTask;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -48,8 +50,8 @@ public class TempFly extends JavaPlugin {
 		plugin = this;
 		tfApi = new TempFlyAPI();
 		
-		F.createFiles(this);
-		V.loadValues();
+		FileHandler.createFiles(this);
+		ConfigValues.loadValues();
 		PageTrails.initialize();
 		PageShop.initialize();
 		
@@ -63,8 +65,15 @@ public class TempFly extends JavaPlugin {
 		initializeAesthetics();
 		initializeHooks();
 		
-		new AutoSave().runTaskTimer(this, 0, V.save * 20 * 60);
-		if (V.particles) {
+		new AutoSave().runTaskTimer(this, 0, ConfigValues.save * 20 * 60);
+		//Check for bonus time every 30 min
+		Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+            @Override
+            public void run() {
+               DailyBonusCheck();
+            }
+        }, 0, 20 * 60 * 30);
+		if (ConfigValues.particles) {
 			new ParticleTask().runTaskTimer(this, 0, 5);	
 		}
 		
@@ -89,6 +98,12 @@ public class TempFly extends JavaPlugin {
 		}
 	}
 	
+	private void DailyBonusCheck() {
+	    for (Player p : Bukkit.getOnlinePlayers()) {
+	        FlyHandle.handleDailyBonus(p);
+	    }
+	}
+	
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -102,7 +117,7 @@ public class TempFly extends JavaPlugin {
     }
 	
 	private static void initializeHooks() {
-		if (F.config.getBoolean("hooks.askyblock.enable_hook", false)) {
+		if (FileHandler.config.getBoolean("hooks.askyblock.enable_hook", false)) {
 			new AskyblockHook();	
 		}
 	}

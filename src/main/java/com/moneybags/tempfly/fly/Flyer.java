@@ -17,7 +17,7 @@ import com.moneybags.tempfly.hook.WorldGuardAPI;
 import com.moneybags.tempfly.time.RelativeTimeRegion;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -69,7 +69,7 @@ public class Flyer {
 	}
 	
 	public boolean isIdle() {
-		return idle >= V.idleThreshold;
+		return idle >= ConfigValues.idleThreshold;
 	}
 	
 	public void resetIdleTimer() {
@@ -153,7 +153,7 @@ public class Flyer {
 	 * @return The enum string representation of the particle
 	 */
 	public String getTrail() {
-		return particle != null ? particle: V.particleType;
+		return particle != null ? particle: ConfigValues.particleType;
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public class Flyer {
 	}
 	
 	public void playTrail() {
-		if (V.hideVanish) {
+		if (ConfigValues.hideVanish) {
 			for (MetadataValue meta : p.getMetadata("vanished")) {
 				if (meta.asBoolean()) {
 					return;
@@ -177,26 +177,26 @@ public class Flyer {
 	}
 	
 	private void updateList(boolean reset) {
-		if (!V.list) {
+		if (!ConfigValues.list) {
 			return;
 		}
 		if (!isFlying() || reset) {
 			p.setPlayerListName(listName);
 		} else {
-			p.setPlayerListName(TimeHandle.regexString(V.listName
+			p.setPlayerListName(TimeHandle.regexString(ConfigValues.listName
 					.replaceAll("\\{PLAYER}", p.getName())
 					.replaceAll("\\{OLD_TAG}", listName), time));
 		}
 	}
 	
 	private void updateName(boolean reset) {
-		if (!V.tag) {
+		if (!ConfigValues.tag) {
 			return;
 		}
 		if (!isFlying() || reset) {
 			p.setDisplayName(tagName);
 		} else {
-			p.setDisplayName(TimeHandle.regexString(V.tagName
+			p.setDisplayName(TimeHandle.regexString(ConfigValues.tagName
 					.replaceAll("\\{PLAYER}", p.getName())
 					.replaceAll("\\{OLD_TAG}", tagName), time));
 		}
@@ -214,14 +214,14 @@ public class Flyer {
 			updateList(false);
 			updateName(false);
 			if (isIdle()) {
-				if (V.idleDrop) {
+				if (ConfigValues.idleDrop) {
 					FlyHandle.removeFlyer(p);
 				}
-				if (!V.idleTimer) {
+				if (!ConfigValues.idleTimer) {
 					return;
 				}
 			}
-			if (!(isFlying()) && (!V.groundTimer)) {
+			if (!(isFlying()) && (!ConfigValues.groundTimer)) {
 				return;
 			}
 			if (time > 0) {
@@ -232,20 +232,20 @@ public class Flyer {
 				
 				time = time-cost;
 				if (time <= 0) {
-					if (!V.protTime) {
+					if (!ConfigValues.protTime) {
 						FlyHandle.addDamageProtection(p);	
 					}
 					FlyHandle.removeFlyer(p);
-					U.m(p, V.invalidTimeSelf);
+					U.m(p, ConfigValues.invalidTimeSelf);
 				}
 				
-				if (V.warningTimes.contains((long)time)) {
-					String title = TimeHandle.regexString(V.warningTitle, time);
-					String subtitle = TimeHandle.regexString(V.warningSubtitle, time);
+				if (ConfigValues.warningTimes.contains((long)time)) {
+					String title = TimeHandle.regexString(ConfigValues.warningTitle, time);
+					String subtitle = TimeHandle.regexString(ConfigValues.warningSubtitle, time);
 					TitleAPI.sendTitle(p, 15, 30, 15, title, subtitle);
 				}
-				if (V.actionBar) {
-					if (V.actionProgress) {
+				if (ConfigValues.actionBar) {
+					if (ConfigValues.actionProgress) {
 						double percent = (((float)time/start)*100);
 						String bar = "";
 						bar = bar.concat("&8[&a");
@@ -260,15 +260,15 @@ public class Flyer {
 						bar = bar.concat("&8]");
 						ActionBarAPI.sendActionBar(p, U.cc(bar));
 					} else {
-						ActionBarAPI.sendActionBar(p, TimeHandle.regexString(V.actionText, getTime()));
+						ActionBarAPI.sendActionBar(p, TimeHandle.regexString(ConfigValues.actionText, getTime()));
 					}
 				}
 			} else {
-				if (!V.protTime) {
+				if (!ConfigValues.protTime) {
 					FlyHandle.addDamageProtection(p);	
 				}
 				FlyHandle.removeFlyer(p);
-				U.m(p, V.invalidTimeSelf);
+				U.m(p, ConfigValues.invalidTimeSelf);
 			}
 		}
 	}

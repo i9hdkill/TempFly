@@ -59,17 +59,17 @@ public class U {
 	}
 	
 	public static void m(Player p, String s) {
-		if (s.equals(V.prefix) || s.equals("\\{PREFIX}") || s == null || s.length() == 0) {
+		if (s.equals(ConfigValues.prefix) || s.equals("\\{PREFIX}") || s == null || s.length() == 0) {
 			return;
 		}
-		p.sendMessage(s.replaceAll("\\{PREFIX}", V.prefix));
+		p.sendMessage(s.replaceAll("\\{PREFIX}", ConfigValues.prefix));
 	}
 	
 	public static void m(CommandSender p, String s) {
 		if (s == null || s.equals("\\{PREFIX}") || s.length() == 0) {
 			return;
 		}
-		p.sendMessage(s.replaceAll("\\{PREFIX}", V.prefix));
+		p.sendMessage(s.replaceAll("\\{PREFIX}", ConfigValues.prefix));
 	}
 	
 	public static boolean hasPermission(CommandSender s, String perm){

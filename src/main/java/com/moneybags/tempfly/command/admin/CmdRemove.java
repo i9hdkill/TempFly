@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import com.moneybags.tempfly.command.CommandHandle;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 public class CmdRemove {
 
 	@SuppressWarnings("deprecation")
 	public CmdRemove(CommandSender s, String[] args) {
 		if (!U.hasPermission(s, "tempfly.remove")) {
-			U.m(s, V.invalidPermission);
+			U.m(s, ConfigValues.invalidPermission);
 			return;
 		}
 		if (args.length < 3) {
@@ -25,7 +25,7 @@ public class CmdRemove {
 		
 		OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 		if (p == null || (p != null && !p.isOnline() && !p.hasPlayedBefore())) {
-			U.m(s, V.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
+			U.m(s, ConfigValues.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
 			return;
 		}
 		double amount = CommandHandle.quantifyArguments(s, args);
@@ -34,10 +34,10 @@ public class CmdRemove {
 		}
 		Math.floor(amount);
 		if (p.isOnline() && TimeHandle.getTime(p.getUniqueId()) > 0) {
-			U.m((Player)p, TimeHandle.regexString(V.timeRemovedSelf, amount));
+			U.m((Player)p, TimeHandle.regexString(ConfigValues.timeRemovedSelf, amount));
 		}
 		TimeHandle.removeTime(p.getUniqueId(), amount);
-		U.m(s, TimeHandle.regexString(V.timeRemovedOther, amount)
+		U.m(s, TimeHandle.regexString(ConfigValues.timeRemovedOther, amount)
 				.replaceAll("\\{PLAYER}", p.getName()));
 	}
 }

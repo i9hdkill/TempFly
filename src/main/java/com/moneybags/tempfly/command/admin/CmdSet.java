@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import com.moneybags.tempfly.command.CommandHandle;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 public class CmdSet {
 
 	@SuppressWarnings("deprecation")
 	public CmdSet(CommandSender s, String[] args) {
 		if (!U.hasPermission(s, "tempfly.set")) {
-			U.m(s, V.invalidPermission);
+			U.m(s, ConfigValues.invalidPermission);
 			return;
 		}
 		if (args.length < 3) {
@@ -25,20 +25,20 @@ public class CmdSet {
 		
 		OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 		if (p == null || (p != null && !p.isOnline() && !p.hasPlayedBefore())) {
-			U.m(s, V.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
+			U.m(s, ConfigValues.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
 			return;
 		}
 		
 		double amount = CommandHandle.quantifyArguments(s, args);
-		if ((V.maxTime > -1) && (amount > V.maxTime)) {
-			amount = V.maxTime;
+		if ((ConfigValues.maxTime > -1) && (amount > ConfigValues.maxTime)) {
+			amount = ConfigValues.maxTime;
 		}
 		amount = Math.floor(amount);
 		TimeHandle.setTime(p.getUniqueId(), amount);
-		U.m(s, TimeHandle.regexString(V.timeSetOther, amount)
+		U.m(s, TimeHandle.regexString(ConfigValues.timeSetOther, amount)
 				.replaceAll("\\{PLAYER}", p.getName()));
 		if (p.isOnline()) {
-			U.m((Player)p, TimeHandle.regexString(V.timeSetSelf, amount));	
+			U.m((Player)p, TimeHandle.regexString(ConfigValues.timeSetSelf, amount));	
 		}
 	}
 	

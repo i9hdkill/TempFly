@@ -11,9 +11,9 @@ import com.moneybags.tempfly.TempFly;
 import com.moneybags.tempfly.gui.GuiSession;
 import com.moneybags.tempfly.gui.Page;
 import com.moneybags.tempfly.util.CompatMaterial;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
 
@@ -31,7 +31,7 @@ public class PageAskyblock extends Page {
 	private static ItemStack disallowed;
 	
 	public static void initialize() {
-		FileConfiguration config = F.page;
+		FileConfiguration config = FileHandler.page;
 		String path = "page.askyblock.settings";
 		title = U.cc(config.getString(path + ".title", "&dFlight Settings"));
 		background = U.getConfigItem(config, path + ".background");
@@ -81,7 +81,7 @@ public class PageAskyblock extends Page {
 		ASkyBlockAPI api = ASkyBlockAPI.getInstance();
 		Island island = api.getIslandOwnedBy(p.getUniqueId());
 		if (island == null) {
-			U.m(p, V.invalidIsland);
+			U.m(p, ConfigValues.invalidIsland);
 			session.endSession();
 			return;
 		}

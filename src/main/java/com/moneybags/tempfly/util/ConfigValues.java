@@ -8,9 +8,9 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.moneybags.tempfly.util.F.C;
+import com.moneybags.tempfly.util.FileHandler.FileType;
 
-public class V {
+public class ConfigValues {
 
 	public static String
 	prefix,
@@ -136,84 +136,84 @@ public class V {
 	dailyBonus = new HashMap<>();
 
 	public static void loadValues() {
-		FileConfiguration config = F.config;
+		FileConfiguration config = FileHandler.config;
 		
-		prefix 				= st(C.LANG, "system.prefix");
-		reload 				= st(C.LANG, "system.reload");
+		prefix 				= st(FileType.LANG, "system.prefix");
+		reload 				= st(FileType.LANG, "system.reload");
 		
-		invalidPermission	= st(C.LANG, "general.invalid.permission");
-		invalidPlayer		= st(C.LANG, "general.invalid.player");
-		invalidNumber		= st(C.LANG, "general.invalid.number");
-		invalidSender		= st(C.LANG, "general.invalid.sender");
-		invalidCommand		= st(C.LANG, "general.invalid.command");
-		invalidTimeOther	= st(C.LANG, "general.invalid.time_other");
-		invalidTimeSelf		= st(C.LANG, "general.invalid.time_self");
-		invalidReciever		= st(C.LANG, "general.invalid.reciever");
-		invalidFlyerSelf	= st(C.LANG, "general.invalid.flyer_self");
-		invalidZoneOther	= st(C.LANG, "general.invalid.zone_other");
-		invalidZoneSelf		= st(C.LANG, "general.invalid.zone_self");
-		invalidIsland		= st(C.LANG, "general.invalid.island");
-		invalidFunds		= st(C.LANG, "general.invalid.funds");
+		invalidPermission	= st(FileType.LANG, "general.invalid.permission");
+		invalidPlayer		= st(FileType.LANG, "general.invalid.player");
+		invalidNumber		= st(FileType.LANG, "general.invalid.number");
+		invalidSender		= st(FileType.LANG, "general.invalid.sender");
+		invalidCommand		= st(FileType.LANG, "general.invalid.command");
+		invalidTimeOther	= st(FileType.LANG, "general.invalid.time_other");
+		invalidTimeSelf		= st(FileType.LANG, "general.invalid.time_self");
+		invalidReciever		= st(FileType.LANG, "general.invalid.reciever");
+		invalidFlyerSelf	= st(FileType.LANG, "general.invalid.flyer_self");
+		invalidZoneOther	= st(FileType.LANG, "general.invalid.zone_other");
+		invalidZoneSelf		= st(FileType.LANG, "general.invalid.zone_self");
+		invalidIsland		= st(FileType.LANG, "general.invalid.island");
+		invalidFunds		= st(FileType.LANG, "general.invalid.funds");
 		
-		timeGivenOther		= st(C.LANG, "general.time.given_other");
-		timeGivenSelf		= st(C.LANG, "general.time.given_self");
-		timeRemovedOther	= st(C.LANG, "general.time.removed_other");
-		timeRemovedSelf		= st(C.LANG, "general.time.removed_self");
-		timeSentOther		= st(C.LANG, "general.time.sent_other");
-		timeSentSelf		= st(C.LANG, "general.time.sent_self");
-		timeSetOther		= st(C.LANG, "general.time.set_other");
-		timeSetSelf			= st(C.LANG, "general.time.set_self");
-		timeMaxOther		= st(C.LANG, "general.time.max_other");
-		timeMaxSelf			= st(C.LANG, "general.time.max_self");
-		timeDecayLost		= st(C.LANG, "general.time.decay");
-		timeFormat			= st(C.LANG, "general.time.format");
-		timePurchased		= st(C.LANG, "general.time.purchased");
-		firstJoin			= st(C.LANG, "general.time.first_join");
-		dailyLogin			= st(C.LANG, "general.time.daily_login");
+		timeGivenOther		= st(FileType.LANG, "general.time.given_other");
+		timeGivenSelf		= st(FileType.LANG, "general.time.given_self");
+		timeRemovedOther	= st(FileType.LANG, "general.time.removed_other");
+		timeRemovedSelf		= st(FileType.LANG, "general.time.removed_self");
+		timeSentOther		= st(FileType.LANG, "general.time.sent_other");
+		timeSentSelf		= st(FileType.LANG, "general.time.sent_self");
+		timeSetOther		= st(FileType.LANG, "general.time.set_other");
+		timeSetSelf			= st(FileType.LANG, "general.time.set_self");
+		timeMaxOther		= st(FileType.LANG, "general.time.max_other");
+		timeMaxSelf			= st(FileType.LANG, "general.time.max_self");
+		timeDecayLost		= st(FileType.LANG, "general.time.decay");
+		timeFormat			= st(FileType.LANG, "general.time.format");
+		timePurchased		= st(FileType.LANG, "general.time.purchased");
+		firstJoin			= st(FileType.LANG, "general.time.first_join");
+		dailyLogin			= st(FileType.LANG, "general.time.daily_login");
 		
-		unitSeconds			= st(C.LANG, "general.unit.seconds", "s");
-		unitMinutes			= st(C.LANG, "general.unit.minutes", "m");
-		unitHours			= st(C.LANG, "general.unit.hours", "h");
-		unitDays			= st(C.LANG, "general.unit.days", "d");
+		unitSeconds			= st(FileType.LANG, "general.unit.seconds", "s");
+		unitMinutes			= st(FileType.LANG, "general.unit.minutes", "m");
+		unitHours			= st(FileType.LANG, "general.unit.hours", "h");
+		unitDays			= st(FileType.LANG, "general.unit.days", "d");
 		
-		infoHeader			= st(C.LANG, "general.info.header");
-		infoPlayer			= st(C.LANG, "general.info.player");
-		infoDays			= st(C.LANG, "general.info.days");
-		infoHours			= st(C.LANG, "general.info.hours");
-		infoMinutes			= st(C.LANG, "general.info.minutes");
-		infoSeconds			= st(C.LANG, "general.info.seconds");
-		infoFooter			= st(C.LANG, "general.info.footer");
-		infoInfinite		= st(C.LANG, "general.info.infinite");
+		infoHeader			= st(FileType.LANG, "general.info.header");
+		infoPlayer			= st(FileType.LANG, "general.info.player");
+		infoDays			= st(FileType.LANG, "general.info.days");
+		infoHours			= st(FileType.LANG, "general.info.hours");
+		infoMinutes			= st(FileType.LANG, "general.info.minutes");
+		infoSeconds			= st(FileType.LANG, "general.info.seconds");
+		infoFooter			= st(FileType.LANG, "general.info.footer");
+		infoInfinite		= st(FileType.LANG, "general.info.infinite");
 		
-		flyEnabledOther	    = st(C.LANG, "general.fly.enabled_other");
-		flyEnabledSelf	    = st(C.LANG, "general.fly.enabled_self");
-		flyDisabledOther	= st(C.LANG, "general.fly.disabled_other");
-		flyDisabledSelf 	= st(C.LANG, "general.fly.disabled_self");
-		flySpeedOther		= st(C.LANG, "general.fly.speed_other");
-		flySpeedSelf		= st(C.LANG, "general.fly.speed_self");
-		flyCooldownDeny		= st(C.LANG, "general.fly.cooldown_deny");
-		flyCooldownOver		= st(C.LANG, "general.fly.cooldown_over");
-		flyRequirementFail  = st(C.LANG, "general.fly.requirement_fail");
+		flyEnabledOther	    = st(FileType.LANG, "general.fly.enabled_other");
+		flyEnabledSelf	    = st(FileType.LANG, "general.fly.enabled_self");
+		flyDisabledOther	= st(FileType.LANG, "general.fly.disabled_other");
+		flyDisabledSelf 	= st(FileType.LANG, "general.fly.disabled_self");
+		flySpeedOther		= st(FileType.LANG, "general.fly.speed_other");
+		flySpeedSelf		= st(FileType.LANG, "general.fly.speed_self");
+		flyCooldownDeny		= st(FileType.LANG, "general.fly.cooldown_deny");
+		flyCooldownOver		= st(FileType.LANG, "general.fly.cooldown_over");
+		flyRequirementFail  = st(FileType.LANG, "general.fly.requirement_fail");
 		
-		fbDays				= st(C.LANG, "aesthetic.featherboard.days");
-		fbHours				= st(C.LANG, "aesthetic.featherboard.hours");
-		fbMinutes			= st(C.LANG, "aesthetic.featherboard.minutes");
-		fbSeconds			= st(C.LANG, "aesthetic.featherboard.seconds");
-		infinity			= st(C.LANG, "aesthetic.symbols.infinity");
+		fbDays				= st(FileType.LANG, "aesthetic.featherboard.days");
+		fbHours				= st(FileType.LANG, "aesthetic.featherboard.hours");
+		fbMinutes			= st(FileType.LANG, "aesthetic.featherboard.minutes");
+		fbSeconds			= st(FileType.LANG, "aesthetic.featherboard.seconds");
+		infinity			= st(FileType.LANG, "aesthetic.symbols.infinity");
 		
-		warningTitle		= st(C.CONFIG, "aesthetic.warning.title");
-		warningSubtitle		= st(C.CONFIG, "aesthetic.warning.subtitle");
+		warningTitle		= st(FileType.CONFIG, "aesthetic.warning.title");
+		warningSubtitle		= st(FileType.CONFIG, "aesthetic.warning.subtitle");
 		
-		actionText			= st(C.CONFIG, "aesthetic.action_bar.text");
+		actionText			= st(FileType.CONFIG, "aesthetic.action_bar.text");
 		
-		List<String> h 		= F.lang.getStringList("system.help");
+		List<String> h 		= FileHandler.lang.getStringList("system.help");
 		if (h != null) {
 			for (String s: h) {
 				help.add(U.cc(s));
 			}
 		}
 		
-		List<String> he 	= F.lang.getStringList("system.help_extended");
+		List<String> he 	= FileHandler.lang.getStringList("system.help_extended");
 		if (he != null) {
 			for (String s: he) {
 				helpExtended.add(U.cc(s));
@@ -221,24 +221,24 @@ public class V {
 		}
 		
 		try {
-			warningTimes    = F.config.getLongList("aesthetic.warning.seconds");
+			warningTimes    = FileHandler.config.getLongList("aesthetic.warning.seconds");
 		} catch (Exception e) {
 			warningTimes = new ArrayList<>();
 			U.logW("You can only set numbers under (aesthetic.warning.seconds) in the config!");
 		}
 		
 		
-		disabledWorlds	 	= F.config.getStringList("general.disabled.worlds");
+		disabledWorlds	 	= FileHandler.config.getStringList("general.disabled.worlds");
 		if (disabledWorlds == null) {
 			disabledWorlds = new ArrayList<>();
 		}
 		
-		disabledRegions	 	= F.config.getStringList("general.disabled.regions");
+		disabledRegions	 	= FileHandler.config.getStringList("general.disabled.regions");
 		if (disabledRegions == null) {
 			disabledRegions = new ArrayList<>();
 		}
 		
-		overrideFlightPermissions = F.config.getStringList("general.fly_override_permissions");
+		overrideFlightPermissions = FileHandler.config.getStringList("general.fly_override_permissions");
 		if (overrideFlightPermissions == null) {
 			overrideFlightPermissions = new ArrayList<>();
 		}
@@ -255,9 +255,9 @@ public class V {
 		particleType		= config.getString("aesthetic.identifier.particles.type", "VILLAGER_HAPPY");
 		hideVanish			= config.getBoolean("aesthetic.identifier.particles.hide_vanish");
 		list				= config.getBoolean("aesthetic.identifier.tab_list.enabled");
-		listName			= st(C.CONFIG, "aesthetic.identifier.tab_list.name");
+		listName			= st(FileType.CONFIG, "aesthetic.identifier.tab_list.name");
 		tag					= config.getBoolean("aesthetic.identifier.name_tag.enabled");
-		tagName				= st(C.CONFIG, "aesthetic.identifier.name_tag.name");
+		tagName				= st(FileType.CONFIG, "aesthetic.identifier.name_tag.name");
 		attackP				= config.getBoolean("general.disable_flight.attack_player");
 		attackM				= config.getBoolean("general.disable_flight.attack_mob");
 		attackedP			= config.getBoolean("general.disable_flight.attacked_by_player");
@@ -296,14 +296,14 @@ public class V {
 		}
 	}
 	
-	private static String st(C file, String key){
+	private static String st(FileType file, String key){
 		try{
 			switch (file)
 			{
 			case CONFIG:
-				return U.cc(F.config.getString(key)).replaceAll("\\{PREFIX}", prefix);
+				return U.cc(FileHandler.config.getString(key)).replaceAll("\\{PREFIX}", prefix);
 			case LANG:
-				return U.cc(F.lang.getString(key)).replaceAll("\\{PREFIX}", prefix);
+				return U.cc(FileHandler.lang.getString(key)).replaceAll("\\{PREFIX}", prefix);
 			default:
 				return "";
 			}
@@ -314,14 +314,14 @@ public class V {
 	}
 	
 	
-	private static String st(C file, String key, String def){
+	private static String st(FileType file, String key, String def){
 		try{
 			switch (file)
 			{
 			case CONFIG:
-				return U.cc(F.config.getString(key)).replaceAll("\\{PREFIX}", prefix);
+				return U.cc(FileHandler.config.getString(key)).replaceAll("\\{PREFIX}", prefix);
 			case LANG:
-				return U.cc(F.lang.getString(key)).replaceAll("\\{PREFIX}", prefix);
+				return U.cc(FileHandler.lang.getString(key)).replaceAll("\\{PREFIX}", prefix);
 			default:
 				return "";
 			}

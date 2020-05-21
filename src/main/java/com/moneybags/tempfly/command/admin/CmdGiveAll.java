@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 import com.moneybags.tempfly.command.CommandHandle;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 public class CmdGiveAll {
 
 	public CmdGiveAll(CommandSender s, String[] args) {
 		if (!U.hasPermission(s, "tempfly.giveall")) {
-			U.m(s, V.invalidPermission);
+			U.m(s, ConfigValues.invalidPermission);
 			return;
 		}
 		//TODO TODO TODO
@@ -31,11 +31,11 @@ public class CmdGiveAll {
 		}
 		amount = Math.floor(amount);
 		for (Player p: Bukkit.getOnlinePlayers()) {
-			if ((V.maxTime > -1) && (TimeHandle.getTime(p.getUniqueId()) + amount >= V.maxTime)) {
+			if ((ConfigValues.maxTime > -1) && (TimeHandle.getTime(p.getUniqueId()) + amount >= ConfigValues.maxTime)) {
 				continue;
 			}
 			TimeHandle.addTime(p.getUniqueId(), amount);
-			U.m((Player)p, TimeHandle.regexString(V.timeGivenSelf, amount));
+			U.m((Player)p, TimeHandle.regexString(ConfigValues.timeGivenSelf, amount));
 		}
 	}
 	

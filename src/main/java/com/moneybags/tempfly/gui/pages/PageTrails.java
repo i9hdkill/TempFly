@@ -23,7 +23,7 @@ import com.moneybags.tempfly.fly.Flyer;
 import com.moneybags.tempfly.gui.DynamicPage;
 import com.moneybags.tempfly.gui.GuiSession;
 import com.moneybags.tempfly.util.CompatMaterial;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.U;
 
 public class PageTrails extends DynamicPage {
@@ -35,7 +35,7 @@ public class PageTrails extends DynamicPage {
 	private static ItemStack prev;
 	
 	public static void initialize() {
-		FileConfiguration config = F.page;
+		FileConfiguration config = FileHandler.page;
 		String path = "page.trails";
 		title = U.cc(config.getString(path + ".title", "&dParticle Trails"));
 		background = U.getConfigItem(config, path + ".background");

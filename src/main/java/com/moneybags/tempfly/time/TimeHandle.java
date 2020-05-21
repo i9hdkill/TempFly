@@ -1,5 +1,6 @@
 package com.moneybags.tempfly.time;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -8,13 +9,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.moneybags.tempfly.fly.FlyHandle;
 import com.moneybags.tempfly.fly.Flyer;
-import com.moneybags.tempfly.util.F;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.FileHandler;
+import com.moneybags.tempfly.util.ConfigValues;
 
 public class TimeHandle {
 
 	public static double getTime(UUID u) {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		String path = "players." + u.toString() + ".time";
 		
 		Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(u));
@@ -25,9 +26,16 @@ public class TimeHandle {
 			return data.getInt(path);
 		}
 	}
+
+	public static long getLastDailyTimeBonusTime(UUID u) {
+        FileConfiguration data = FileHandler.data;
+        String path = "players." + u.toString() + ".got-daily-time";
+        
+        return data.getLong(path);
+    }
 	
 	public static void removeTime(UUID u, double seconds) {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		String path = "players." + u.toString() + ".time";
 		Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(u));
 		
@@ -38,11 +46,23 @@ public class TimeHandle {
 			f.setTime(remaining);
 		} 
 		data.set(path, remaining);
-		F.saveData();
+		FileHandler.saveData();
+	}
+	
+	public static void addDailyTime(UUID uuid, double seconds) {
+	    LocalDateTime.now();
+	    FileConfiguration data = FileHandler.data;
+        String path = "players." + uuid.toString() + ".got-daily-time";
+        Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(uuid));
+        long currentDate = System.currentTimeMillis();
+        data.set(path, currentDate);
+        FileHandler.saveData();
+        
+	    addTime(uuid, seconds);
 	}
 	
 	public static void addTime(UUID u, double seconds) {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		String path = "players." + u.toString() + ".time";
 		Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(u));
 		
@@ -55,11 +75,11 @@ public class TimeHandle {
 			f.setTime(remaining);
 		}
 		data.set(path, remaining);
-		F.saveData();
+		FileHandler.saveData();
 	}
 	
 	public static void setTime(UUID u, double seconds) {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		String path = "players." + u.toString() + ".time";
 		Flyer f = FlyHandle.getFlyer(Bukkit.getPlayer(u));
 		
@@ -68,7 +88,7 @@ public class TimeHandle {
 			
 		}
 		data.set(path, seconds);
-		F.saveData();
+		FileHandler.saveData();
 	}
 	
 	public static String regexString(String s, double seconds) {
@@ -78,18 +98,18 @@ public class TimeHandle {
 		long secs = formatTime(TimeUnit.SECONDS, Math.ceil(seconds));
 		
 		String fin = "";
-		if (days > 0) fin = fin.concat(V.timeFormat
+		if (days > 0) fin = fin.concat(ConfigValues.timeFormat
 				.replaceAll("\\{QUANTITY}", String.valueOf(days))
-				.replaceAll("\\{UNIT}", V.unitDays) + " ");
-		if (hours > 0) fin = fin.concat(V.timeFormat
+				.replaceAll("\\{UNIT}", ConfigValues.unitDays) + " ");
+		if (hours > 0) fin = fin.concat(ConfigValues.timeFormat
 				.replaceAll("\\{QUANTITY}", String.valueOf(hours))
-				.replaceAll("\\{UNIT}", V.unitHours) + " ");
-		if (minutes > 0) fin = fin.concat(V.timeFormat
+				.replaceAll("\\{UNIT}", ConfigValues.unitHours) + " ");
+		if (minutes > 0) fin = fin.concat(ConfigValues.timeFormat
 				.replaceAll("\\{QUANTITY}", String.valueOf(minutes))
-				.replaceAll("\\{UNIT}", V.unitMinutes) + " ");
-		if (secs > 0 || fin.length() == 0) fin = fin.concat(V.timeFormat
+				.replaceAll("\\{UNIT}", ConfigValues.unitMinutes) + " ");
+		if (secs > 0 || fin.length() == 0) fin = fin.concat(ConfigValues.timeFormat
 				.replaceAll("\\{QUANTITY}", String.valueOf(secs))
-				.replaceAll("\\{UNIT}", V.unitSeconds) + " ");
+				.replaceAll("\\{UNIT}", ConfigValues.unitSeconds) + " ");
 		if ((fin.length() > 0) && (String.valueOf(fin.charAt(fin.length() - 1)).equals(" "))) {
 			fin = fin.substring(0, fin.length()-1);
 		}

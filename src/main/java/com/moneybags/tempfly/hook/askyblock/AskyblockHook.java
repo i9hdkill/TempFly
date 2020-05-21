@@ -25,9 +25,9 @@ import com.moneybags.tempfly.event.FlightEnabledEvent;
 import com.moneybags.tempfly.fly.FlyHandle;
 import com.moneybags.tempfly.fly.Flyer;
 import com.moneybags.tempfly.hook.WorldGuardAPI;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
@@ -73,12 +73,12 @@ public class AskyblockHook implements Listener {
 		TempFly.plugin.enableAskyblock(this);
 		
 		String path = "hooks.askyblock.flight_settings";
-		wilderness = F.config.getBoolean(path + ".wilderness");
-		team = F.config.getBoolean(path + ".base_permissions.team");
-		coop = F.config.getBoolean(path + ".base_permissions.coop");
-		visitor = F.config.getBoolean(path + ".base_permissions.visitor");
+		wilderness = FileHandler.config.getBoolean(path + ".wilderness");
+		team = FileHandler.config.getBoolean(path + ".base_permissions.team");
+		coop = FileHandler.config.getBoolean(path + ".base_permissions.coop");
+		visitor = FileHandler.config.getBoolean(path + ".base_permissions.visitor");
 		
-		ConfigurationSection csR = F.config.getConfigurationSection("hooks.askyblock.unlockables");
+		ConfigurationSection csR = FileHandler.config.getConfigurationSection("hooks.askyblock.unlockables");
 		if (csR != null) {
 			for (String s : csR.getKeys(false)) {
 				RequirementType rt = RequirementType.valueOf(s.toUpperCase());
@@ -87,7 +87,7 @@ public class AskyblockHook implements Listener {
 					continue;
 				}
 				if ((rt.equals(RequirementType.REGIONS)) || (rt.equals(RequirementType.WORLDS))) {
-					ConfigurationSection csWR = F.config.getConfigurationSection("hooks.askyblock.unlockables." + s);
+					ConfigurationSection csWR = FileHandler.config.getConfigurationSection("hooks.askyblock.unlockables." + s);
 					if (csWR != null) {
 						for (String ss : csWR.getKeys(false)) {
 							requirements.put(rt, new IslandRequirements("hooks.askyblock.unlockables." + s + "." + ss, ss));
@@ -228,7 +228,7 @@ public class AskyblockHook implements Listener {
 		} else {
 			if (!wilderness) {
 				FlyHandle.removeFlyer(p);
-				U.m(p, V.invalidZoneSelf);
+				U.m(p, ConfigValues.invalidZoneSelf);
 				return false;
 			}
 			World world = loc.getWorld();
@@ -245,7 +245,7 @@ public class AskyblockHook implements Listener {
 				Location homeLoc = api.getHomeLocation(p.getUniqueId());
 				if (entry.getKey().equals(RequirementType.WORLDS) && (entry.getValue().getName().equals(world.getName()))) {
 					if (homeLoc == null) {
-						U.m(p, V.flyRequirementFail);
+						U.m(p, ConfigValues.flyRequirementFail);
 						return false;
 					} else {
 						Island homeIsland = api.getIslandAt(homeLoc);
@@ -253,7 +253,7 @@ public class AskyblockHook implements Listener {
 					}
 				} else if (entry.getKey().equals(RequirementType.REGIONS) && regions.contains(entry.getValue().getName())) {
 					if (homeLoc == null) {
-						U.m(p, V.flyRequirementFail);
+						U.m(p, ConfigValues.flyRequirementFail);
 						return false;
 					} else {
 						Island homeIsland = api.getIslandAt(homeLoc);
@@ -269,7 +269,7 @@ public class AskyblockHook implements Listener {
 		ASkyBlockAPI api = ASkyBlockAPI.getInstance();
 		if (ir.getRequiredLevel() > api.getLongIslandLevel(island.getOwner())) {
 			FlyHandle.removeFlyer(p);
-			U.m(p, V.flyRequirementFail);
+			U.m(p, ConfigValues.flyRequirementFail);
 			return false;
 		}
 		Map<String, Boolean> completed = api.getChallengeStatus(p.getUniqueId());

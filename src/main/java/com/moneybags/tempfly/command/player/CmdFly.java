@@ -9,7 +9,7 @@ import com.moneybags.tempfly.fly.FlyHandle;
 import com.moneybags.tempfly.fly.Flyer;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 public class CmdFly {
 
@@ -26,7 +26,7 @@ public class CmdFly {
 			p = Bukkit.getPlayer(args[1]);
 			if (p != null) {
 				if (!U.hasPermission(s, "tempfly.toggle.other")) {
-					U.m(s, V.invalidPermission);
+					U.m(s, ConfigValues.invalidPermission);
 					return;
 				}
 				
@@ -44,11 +44,11 @@ public class CmdFly {
 				
 			} else if (args[1].equalsIgnoreCase("on") || args[1].equalsIgnoreCase("off")) {
 				if (!U.isPlayer(s)) {
-					U.m(s, V.invalidSender);
+					U.m(s, ConfigValues.invalidSender);
 					return;
 				}
 				if (!U.hasPermission(s, "tempfly.toggle.self")) {
-					U.m(s, V.invalidPermission);
+					U.m(s, ConfigValues.invalidPermission);
 					return;
 				}
 				
@@ -60,7 +60,7 @@ public class CmdFly {
 				}
 				
 			} else if (args.length > 2) {
-				U.m(s, V.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
+				U.m(s, ConfigValues.invalidPlayer.replaceAll("\\{PLAYER}", args[1]));
 				return;
 			} else {
 				U.m(s, U.cc("&c/tf toggle [on / off]"));
@@ -70,11 +70,11 @@ public class CmdFly {
 			
 		} else {
 			if (!U.isPlayer(s)) {
-				U.m(s, V.invalidSender);
+				U.m(s, ConfigValues.invalidSender);
 				return;
 			}
 			if (!U.hasPermission(s, "tempfly.toggle.self")) {
-				U.m(s, V.invalidPermission);
+				U.m(s, ConfigValues.invalidPermission);
 				return;
 			}
 		}
@@ -91,23 +91,23 @@ public class CmdFly {
 			double time = TimeHandle.getTime(p.getUniqueId());
 			if ((time <= 0) && (!p.hasPermission("tempfly.time.infinite"))) {
 				if (!s.equals(p)) {
-					U.m(s, V.invalidTimeOther.replaceAll("\\{PLAYER}", p.getName()));	
+					U.m(s, ConfigValues.invalidTimeOther.replaceAll("\\{PLAYER}", p.getName()));	
 				} else {
-					U.m(s, V.invalidTimeSelf);
+					U.m(s, ConfigValues.invalidTimeSelf);
 				}
 				return;
 			}
 			if (!FlyHandle.flyAllowed(p.getLocation())) {
 				if (!s.equals(p)) {
-					U.m(s, V.invalidZoneOther.replaceAll("\\{PLAYER}", p.getName()));
+					U.m(s, ConfigValues.invalidZoneOther.replaceAll("\\{PLAYER}", p.getName()));
 					return;
 				} else {
-					U.m(s, V.invalidZoneSelf);
+					U.m(s, ConfigValues.invalidZoneSelf);
 					return;
 				}	
 			}
 			if ((FlyHandle.onCooldown(p)) && (args.length < 1)) {
-				U.m(s, V.flyCooldownDeny);
+				U.m(s, ConfigValues.flyCooldownDeny);
 				return;
 			}
 			FlightEnabledEvent e = new FlightEnabledEvent(p);
@@ -117,18 +117,18 @@ public class CmdFly {
 			}
 			FlyHandle.removeDamageProtction(p);
 			FlyHandle.addFlyer(p);
-			U.m(p, V.flyEnabledSelf);
+			U.m(p, ConfigValues.flyEnabledSelf);
 			if (!s.equals(p)) {
-				U.m(s, V.flyEnabledOther.replaceAll("\\{PLAYER}", p.getName()));	
+				U.m(s, ConfigValues.flyEnabledOther.replaceAll("\\{PLAYER}", p.getName()));	
 			}
 		} else if (toggle && !toggleVal && f != null || !toggle && f != null) {
-			if (!V.protCommand) {
+			if (!ConfigValues.protCommand) {
 				FlyHandle.addDamageProtection(p);	
 			}
 			FlyHandle.removeFlyer(p);
-			U.m(p, V.flyDisabledSelf);
+			U.m(p, ConfigValues.flyDisabledSelf);
 			if (!s.equals(p)) {
-				U.m(s, V.flyDisabledOther.replaceAll("\\{PLAYER}", p.getName()));	
+				U.m(s, ConfigValues.flyDisabledOther.replaceAll("\\{PLAYER}", p.getName()));	
 			}
 		}
 	}

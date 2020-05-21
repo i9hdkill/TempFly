@@ -12,7 +12,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.data.BlockData;
 
 import com.moneybags.tempfly.TempFly;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 
 public class Particles {
 
@@ -55,12 +55,12 @@ public class Particles {
 	}
 	
 	public static String loadTrail(UUID u) {
-		return F.data.getString("players." + u.toString() + ".trail", null);
+		return FileHandler.data.getString("players." + u.toString() + ".trail", null);
 	}
 	
 	public static void setTrail(UUID u, String s) {
-		F.data.set("players." + u.toString() + ".trail", s);
-		F.saveData();
+		FileHandler.data.set("players." + u.toString() + ".trail", s);
+		FileHandler.saveData();
 	}
 	
 }

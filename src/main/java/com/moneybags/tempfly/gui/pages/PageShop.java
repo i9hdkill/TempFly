@@ -20,9 +20,9 @@ import com.moneybags.tempfly.gui.DynamicPage;
 import com.moneybags.tempfly.gui.GuiSession;
 import com.moneybags.tempfly.time.TimeHandle;
 import com.moneybags.tempfly.util.CompatMaterial;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -34,7 +34,7 @@ public class PageShop extends DynamicPage {
 	private static ItemStack background, toolbar, next, prev;
 	
 	public static void initialize() {
-		FileConfiguration config = F.page;
+		FileConfiguration config = FileHandler.page;
 		String path = "page.shop";
 		title = U.cc(config.getString(path + ".title", "&dParticle Trails"));
 		background = U.getConfigItem(config, path + ".background");
@@ -47,11 +47,11 @@ public class PageShop extends DynamicPage {
 		CompatMaterial.setType(next, CompatMaterial.REDSTONE_TORCH);
 		CompatMaterial.setType(prev, CompatMaterial.REDSTONE_TORCH);
 		
-		ConfigurationSection csOptons = F.config.getConfigurationSection("shop.options");
+		ConfigurationSection csOptons = FileHandler.config.getConfigurationSection("shop.options");
 		if (csOptons != null) {
 			for (String s: csOptons.getKeys(false)) {
 				path = "shop.options." + s;
-				allOptions.add(new ShopOption(F.config.getInt(path + ".time", 0), F.config.getDouble(path + ".cost", 1000000)));
+				allOptions.add(new ShopOption(FileHandler.config.getInt(path + ".time", 0), FileHandler.config.getDouble(path + ".cost", 1000000)));
 			}
 		}
 	}
@@ -104,12 +104,12 @@ public class PageShop extends DynamicPage {
 			double balance = eco.getBalance(p);
 			ShopOption option = layout.get(slot);
 			if (option.getCost() > balance) {
-				U.m(p, TimeHandle.regexString(V.invalidFunds, option.getTime())
+				U.m(p, TimeHandle.regexString(ConfigValues.invalidFunds, option.getTime())
 						.replaceAll("\\{COST}", String.valueOf(option.getCost())));
 			} else {
 				eco.withdrawPlayer(p, option.getCost());
 				TimeHandle.addTime(p.getUniqueId(), option.getTime());
-				U.m(p, TimeHandle.regexString(V.timePurchased, option.getTime())
+				U.m(p, TimeHandle.regexString(ConfigValues.timePurchased, option.getTime())
 						.replaceAll("\\{COST}", String.valueOf(option.getCost())));	
 			}
 		} else if (slot == 53 && allOptions.size() > (getPageNumber()+1)*21) {
@@ -133,12 +133,12 @@ public class PageShop extends DynamicPage {
 			
 			String name = U.cc(
 					TimeHandle.regexString(
-							F.page.getString("page.shop.option.name", "{FORMATTED_TIME}"), time)
+							FileHandler.page.getString("page.shop.option.name", "{FORMATTED_TIME}"), time)
 							.replaceAll("\\{COST}", String.valueOf(cost))
 								);
 			meta.setDisplayName(name);
 			
-			List<String> l = F.page.getStringList("page.shop.option.lore");
+			List<String> l = FileHandler.page.getStringList("page.shop.option.lore");
 			List<String> lore = new ArrayList<>();
 			if (l != null) {
 				for (String s: l) {

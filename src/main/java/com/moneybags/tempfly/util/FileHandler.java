@@ -17,9 +17,9 @@ import org.bukkit.plugin.Plugin;
 
 import com.moneybags.tempfly.TempFly;
 
-public class F {
+public class FileHandler {
 
-	public static enum C {
+	public static enum FileType {
 		CONFIG,
 		LANG,
 		DATA,

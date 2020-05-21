@@ -3,7 +3,7 @@ package com.moneybags.tempfly.hook.askyblock;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 
 public class IslandRequirements {
 
@@ -12,8 +12,8 @@ public class IslandRequirements {
 	private String name;
 	
 	public IslandRequirements(String path, String name) {
-		challenges = F.config.getStringList(path + ".challenges");
-		islandLevel = F.config.getLong(path + ".island_level", 0);
+		challenges = FileHandler.config.getStringList(path + ".challenges");
+		islandLevel = FileHandler.config.getLong(path + ".island_level", 0);
 		this.name = name;
 	}
 	

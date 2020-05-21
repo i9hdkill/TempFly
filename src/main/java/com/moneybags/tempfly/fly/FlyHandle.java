@@ -1,6 +1,10 @@
 package com.moneybags.tempfly.fly;
 
 import java.text.DateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,9 +46,9 @@ import com.moneybags.tempfly.TempFly;
 import com.moneybags.tempfly.hook.WorldGuardAPI;
 import com.moneybags.tempfly.time.RelativeTimeRegion;
 import com.moneybags.tempfly.time.TimeHandle;
-import com.moneybags.tempfly.util.F;
+import com.moneybags.tempfly.util.FileHandler;
 import com.moneybags.tempfly.util.U;
-import com.moneybags.tempfly.util.V;
+import com.moneybags.tempfly.util.ConfigValues;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -63,19 +67,19 @@ public class FlyHandle implements Listener {
 	}
 	
 	public static void initialize() {
-		blackRegion = F.config.contains("general.disabled.regions") ? F.config.getStringList("general.disabled.regions") : new ArrayList<>();
-		ConfigurationSection csRtW = F.config.getConfigurationSection("general.relative_time.worlds");
+		blackRegion = FileHandler.config.contains("general.disabled.regions") ? FileHandler.config.getStringList("general.disabled.regions") : new ArrayList<>();
+		ConfigurationSection csRtW = FileHandler.config.getConfigurationSection("general.relative_time.worlds");
 		if (csRtW != null) {
 			for (String s : csRtW.getKeys(false)) {
 				rtRegions.add(new RelativeTimeRegion(
-						F.config.getDouble("general.relative_time.worlds." + s, 1), true, s));
+						FileHandler.config.getDouble("general.relative_time.worlds." + s, 1), true, s));
 			}
 		}
-		ConfigurationSection csRtR = F.config.getConfigurationSection("general.relative_time.regions");
+		ConfigurationSection csRtR = FileHandler.config.getConfigurationSection("general.relative_time.regions");
 		if (csRtW != null) {
 			for (String s : csRtR.getKeys(false)) {
 				rtRegions.add(new RelativeTimeRegion(
-						F.config.getDouble("general.relative_time.regions." + s, 1), false, s));
+						FileHandler.config.getDouble("general.relative_time.regions." + s, 1), false, s));
 			}
 		}
 	}
@@ -85,21 +89,21 @@ public class FlyHandle implements Listener {
 	}
 	
 	public static void save() {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		for (Flyer f: flyers.values()) {
 			String path = "players." + f.getPlayer().getUniqueId().toString() + ".time";
 			double time = f.getTime();	
 			data.set(path, time);
 		}
-		F.saveData();
+		FileHandler.saveData();
 	}
 	
 	public static void save(Flyer f) {
-		FileConfiguration data = F.data;
+		FileConfiguration data = FileHandler.data;
 		String path = "players." + f.getPlayer().getUniqueId().toString() + ".time";
 		double time = f.getTime();
 		data.set(path, time);
-		F.saveData();
+		FileHandler.saveData();
 	}
 	
 	public static void addDamageProtection(Player p) {
@@ -148,7 +152,7 @@ public class FlyHandle implements Listener {
 	
 	public static boolean flyAllowed(Location loc) {
 		String world = loc.getWorld().getName();
-		for (String w: V.disabledWorlds) {
+		for (String w: ConfigValues.disabledWorlds) {
 			if (w.equals(world)) {
 				return false;
 			}
@@ -187,7 +191,7 @@ public class FlyHandle implements Listener {
 						Player n = Bukkit.getPlayer(u);
 						if (n != null) {
 							addFlyer(p);
-							U.m(n, V.flyCooldownOver);
+							U.m(n, ConfigValues.flyCooldownOver);
 						}
 					}
 					cooldown.remove(u);
@@ -199,7 +203,7 @@ public class FlyHandle implements Listener {
 	public static void disableFlyer(Flyer f) {
 		removeFlyer(f.getPlayer());
 		f.removeFlyer();
-		U.m(f.getPlayer(), V.flyDisabledSelf);
+		U.m(f.getPlayer(), ConfigValues.flyDisabledSelf);
 	}
 	
 	public static String getPlaceHolder(Player p, Placeholder type) {
@@ -220,16 +224,16 @@ public class FlyHandle implements Listener {
 			String s = "";
 			boolean i = U.hasPermission(p, "tempfly.time.infinite");
 			if (days > 0) {
-				s = s.concat(V.fbDays.replaceAll("\\{DAYS}", i ? String.valueOf(V.infinity) : String.valueOf(days)));
+				s = s.concat(ConfigValues.fbDays.replaceAll("\\{DAYS}", i ? String.valueOf(ConfigValues.infinity) : String.valueOf(days)));
 			}
 			if (hours > 0) {
-				s = s.concat(V.fbHours.replaceAll("\\{HOURS}", i ? String.valueOf(V.infinity) : String.valueOf(hours)));
+				s = s.concat(ConfigValues.fbHours.replaceAll("\\{HOURS}", i ? String.valueOf(ConfigValues.infinity) : String.valueOf(hours)));
 			}
 			if (minutes > 0) {
-				s = s.concat(V.fbMinutes.replaceAll("\\{MINUTES}", i ? String.valueOf(V.infinity) : String.valueOf(minutes)));
+				s = s.concat(ConfigValues.fbMinutes.replaceAll("\\{MINUTES}", i ? String.valueOf(ConfigValues.infinity) : String.valueOf(minutes)));
 			}
 			if (seconds > 0) {
-				s = s.concat(V.fbSeconds.replaceAll("\\{SECONDS}", i ? String.valueOf(V.infinity) : String.valueOf(seconds)));
+				s = s.concat(ConfigValues.fbSeconds.replaceAll("\\{SECONDS}", i ? String.valueOf(ConfigValues.infinity) : String.valueOf(seconds)));
 			}
 			return s;
 		}
@@ -340,57 +344,32 @@ public class FlyHandle implements Listener {
 			}
 		}.runTaskLater(TempFly.plugin, 1);
 	}
-	
-	//TODO some rand is using methods here depricated in 1997
-	@SuppressWarnings("deprecation")
+
 	@EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void on(PlayerJoinEvent e) {
+	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		
 		
-		if (V.timeDecay && p.hasPlayedBefore()) {
+		if (ConfigValues.timeDecay && p.hasPlayedBefore()) {
 			long offline = (System.currentTimeMillis() - p.getLastPlayed()) / 1000;
-			double lost = (offline / V.decayThresh) * V.decayAmount;
+			double lost = (offline / ConfigValues.decayThresh) * ConfigValues.decayAmount;
 			double time = TimeHandle.getTime(p.getUniqueId());
 			if (lost > time) {
 				lost = time;
 			}
 			if (lost > 0) {
 				TimeHandle.removeTime(p.getUniqueId(), lost);
-				U.m(p, TimeHandle.regexString(V.timeDecayLost, lost));	
+				U.m(p, TimeHandle.regexString(ConfigValues.timeDecayLost, lost));	
 			}
 		}
 		
 		
-		if (!p.hasPlayedBefore() && V.firstJoinTime > 0) {
-			TimeHandle.addTime(p.getUniqueId(), V.firstJoinTime);
-			U.m(p, TimeHandle.regexString(V.firstJoin, V.firstJoinTime));
+		if (!p.hasPlayedBefore() && ConfigValues.firstJoinTime > 0) {
+			TimeHandle.addTime(p.getUniqueId(), ConfigValues.firstJoinTime);
+			U.m(p, TimeHandle.regexString(ConfigValues.firstJoin, ConfigValues.firstJoinTime));
 		}
-		
-		
-		Date lj = new Date(p.getLastPlayed());
-		Date ct = new Date(System.currentTimeMillis());
-		if ((lj.getDate() != ct.getDate())
-				|| ((lj.getDate() == ct.getDate()) && (lj.getMonth() != ct.getMonth()))) {
-			if (V.legacyBonus > 0) {
-				TimeHandle.addTime(p.getUniqueId(), V.legacyBonus);
-				U.m(p, TimeHandle.regexString(V.dailyLogin, V.legacyBonus));	
-			} else if (V.dailyBonus.size() > 0) {
-				double time = 0;
-				
-				for (Entry<String, Double> entry: V.dailyBonus.entrySet()) {
-					if (p.hasPermission("tempfly.bonus." + entry.getKey())) {
-						time += entry.getValue();
-					}
-				}
-				
-				if (time > 0) {
-					TimeHandle.addTime(p.getUniqueId(), time);
-					U.m(p, TimeHandle.regexString(V.dailyLogin, time));	
-				}
-			}
-		}
-		
+
+		handleDailyBonus(p);
 		
 		GameMode m = p.getGameMode();
 		if (!(m.equals(GameMode.CREATIVE)) && !(m.equals(GameMode.SPECTATOR))) {
@@ -400,6 +379,32 @@ public class FlyHandle implements Listener {
 		
 		DateFormat.getDateInstance().format(0);
 		regainFlightDisconnect(p);
+	}
+	
+	public static void handleDailyBonus(Player player) {
+	    long currentTime = System.currentTimeMillis();
+	    long lastDailyBonus = TimeHandle.getLastDailyTimeBonusTime(player.getUniqueId());
+	    long elapsedTime = currentTime - lastDailyBonus;
+	    final long dayInMs = 3600000;
+        if (elapsedTime > dayInMs) {
+            if (ConfigValues.legacyBonus > 0) {
+                TimeHandle.addTime(player.getUniqueId(), ConfigValues.legacyBonus);
+                U.m(player, TimeHandle.regexString(ConfigValues.dailyLogin, ConfigValues.legacyBonus));  
+            } else if (ConfigValues.dailyBonus.size() > 0) {
+                double time = 0;
+                
+                for (Entry<String, Double> entry: ConfigValues.dailyBonus.entrySet()) {
+                    if (player.hasPermission("tempfly.bonus." + entry.getKey())) {
+                        time += entry.getValue();
+                    }
+                }
+                
+                if (time > 0) {
+                    TimeHandle.addDailyTime(player.getUniqueId(), time);
+                    U.m(player, TimeHandle.regexString(ConfigValues.dailyLogin, time));  
+                }
+            }
+        }
 	}
 	
 	@EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = false)
@@ -414,8 +419,8 @@ public class FlyHandle implements Listener {
 	public static void addFlightDisconnect(Player p) {
 		if (!flyers.containsKey(p)) 
 			return;
-		F.data.set("players." + p.getUniqueId() + ".logged_in_flight", true);
-		F.saveData();
+		FileHandler.data.set("players." + p.getUniqueId() + ".logged_in_flight", true);
+		FileHandler.saveData();
 	}
 	
 	public static void regainFlightDisconnect(Player p) {
@@ -428,12 +433,12 @@ public class FlyHandle implements Listener {
 						p.setFlying(false);
 						p.setAllowFlight(false);
 					}
-					if (F.data.getBoolean("players." + p.getUniqueId() + ".logged_in_flight")) {
+					if (FileHandler.data.getBoolean("players." + p.getUniqueId() + ".logged_in_flight")) {
 						if ((TimeHandle.getTime(p.getUniqueId()) > 0) && (!p.isOnGround())) {
 							addFlyer(p);	
 						}
-						F.data.set("players." + p.getUniqueId() + ".logged_in_flight", false);
-						F.saveData();
+						FileHandler.data.set("players." + p.getUniqueId() + ".logged_in_flight", false);
+						FileHandler.saveData();
 					}
 				}
 			}.runTaskLater(TempFly.plugin, 1);
@@ -451,7 +456,7 @@ public class FlyHandle implements Listener {
 		}
 		Flyer f = getFlyer(p);
 		f.resetIdleTimer();
-		if (p.getLocation().getBlockY() > V.maxY) {
+		if (p.getLocation().getBlockY() > ConfigValues.maxY) {
 			p.setFlying(false);
 		}
 		
@@ -547,26 +552,26 @@ public class FlyHandle implements Listener {
 		Flyer f = getFlyer(p);
 		
 		if (f != null) {
-			if (!V.protCombat) {
+			if (!ConfigValues.protCombat) {
 				FlyHandle.addDamageProtection(p);
 			}
 			removeFlyer(p);
 			f.removeFlyer();
-			U.m(p, V.flyDisabledSelf);	
+			U.m(p, ConfigValues.flyDisabledSelf);	
 		}
-		addCooldown(p, type.isPvp() ? V.cooldownPvp : V.cooldownPve, f != null);
+		addCooldown(p, type.isPvp() ? ConfigValues.cooldownPvp : ConfigValues.cooldownPve, f != null);
 	}
 	
 	public static boolean combatDisable(CombatType type) {
 		switch (type) {
 		case FLYER_ATTACKS_MOB:
-			return V.attackM;
+			return ConfigValues.attackM;
 		case FLYER_ATTACKS_PLAYER:
-			return V.attackP;
+			return ConfigValues.attackP;
 		case MOB_ATTACKS_FLYER:
-			return V.attackedM;
+			return ConfigValues.attackedM;
 		case PLAYER_ATTACKS_FLYER:
-			return V.attackedP;
+			return ConfigValues.attackedP;
 		}
 		return false;
 	}
